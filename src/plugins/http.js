@@ -98,7 +98,7 @@ function patch (http, tracer, config) {
 
   function createSpan (options) {
     const uri = extractUrl(options)
-    if (uri === `${tracer._url.href}/v0.3/traces`) {
+    if (uri === `${tracer._url.href}/v0.4/traces`) {
       return null
     }
     const method = (options.method || 'GET').toUpperCase()

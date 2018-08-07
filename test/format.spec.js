@@ -140,5 +140,14 @@ describe('format', () => {
       expect(trace.start).to.be.instanceof(Int64BE)
       expect(trace.duration).to.be.instanceof(Int64BE)
     })
+
+    it('should include the sampling priority', () => {
+      const priorities = [-1, 0, 1, 2]
+      priorities.forEach(p => {
+        spanContext.samplingPriority = p
+        trace = format(span)
+        expect(trace.metrics._sampling_priority_v1).to.equal(p)
+      })
+    })
   })
 })

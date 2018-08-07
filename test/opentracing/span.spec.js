@@ -56,6 +56,19 @@ describe('Span', () => {
     expect(span.context().trace.started).to.deep.equal(['span', span])
   })
 
+  it('should use a parent context with priority sampling', () => {
+    const priorities = [-1, 0, 1, 2]
+    priorities.forEach(p => {
+      const parent = {
+        traceId: new Uint64BE(123, 123),
+        spanId: new Uint64BE(456, 456),
+        samplingPriority: p,
+      }
+      span = new Span(tracer, { operationName: 'operation', parent })
+      expect(span.context().samplingPriority).to.equal(p)
+    })
+  })
+
   describe('tracer', () => {
     it('should return its parent tracer', () => {
       span = new Span(tracer, { operationName: 'operation' })

@@ -7,10 +7,11 @@ const encode = require('./encode')
 const tracerVersion = require('../lib/version')
 
 class Writer {
-  constructor (url, size) {
+  constructor (url, size, afterFlush) {
     this._queue = []
     this._url = url
     this._size = size
+    this._afterFlush = afterFlush
   }
 
   get length () {
@@ -44,7 +45,7 @@ class Writer {
         protocol: this._url.protocol,
         hostname: this._url.hostname,
         port: this._url.port,
-        path: '/v0.3/traces',
+        path: '/v0.4/traces',
         method: 'PUT',
         headers: {
           'Content-Type': 'application/msgpack',
@@ -58,12 +59,17 @@ class Writer {
 
       log.debug(() => `Request to the agent: ${JSON.stringify(options)}`)
 
+      this._queue = []
+
       platform
         .request(Object.assign({ data }, options))
-        .then(res => log.debug(`Response from the agent: ${res}`))
-        .catch(e => log.error(e))
-
-      this._queue = []
+        .then(res => {
+          log.debug(`Response from the agent: ${res}`)
+          this._afterFlush(JSON.parse(res))
+        })
+        .catch(e => {
+          log.error(e)
+        })
     }
   }
 

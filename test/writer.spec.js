@@ -1,5 +1,7 @@
 'use strict'
 
+const agent = require('./plugins/agent')
+
 describe('Writer', () => {
   let Writer
   let writer
@@ -25,7 +27,7 @@ describe('Writer', () => {
       name: sinon.stub(),
       version: sinon.stub(),
       engine: sinon.stub(),
-      request: sinon.stub().returns(Promise.resolve()),
+      request: sinon.stub().returns(Promise.resolve(JSON.stringify(agent.RESPONSE_MOCK))),
       msgpack: {
         prefix: sinon.stub()
       }
@@ -51,7 +53,7 @@ describe('Writer', () => {
       './encode': encode,
       '../lib/version': 'tracerVersion'
     })
-    writer = new Writer(url, 3)
+    writer = new Writer(url, 3, sinon.stub())
   })
 
   describe('length', () => {
@@ -114,7 +116,7 @@ describe('Writer', () => {
         protocol: url.protocol,
         hostname: url.hostname,
         port: url.port,
-        path: '/v0.3/traces',
+        path: '/v0.4/traces',
         method: 'PUT',
         headers: {
           'Content-Type': 'application/msgpack',
@@ -138,6 +140,15 @@ describe('Writer', () => {
 
       setTimeout(() => {
         expect(log.error).to.have.been.calledWith(error)
+        done()
+      })
+    })
+
+    it('should yield the results of the flush', done => {
+      writer.append(span)
+      writer.flush()
+      setTimeout(() => {
+        expect(writer._afterFlush).to.have.been.calledWith(agent.RESPONSE_MOCK)
         done()
       })
     })
