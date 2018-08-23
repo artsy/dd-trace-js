@@ -173,10 +173,10 @@ query HelloWorld {
 
 <h5 id="graphql-config">Configuration Options</h5>
 
-| Option          | Default                                          | Description                                                      |
-|-----------------|--------------------------------------------------|------------------------------------------------------------------|
-| service         | *Service name of the app suffixed with -graphql* | The service name for this integration.                           |
-| filterVariables | `variables => variables`                         | A callback that allows filtering of variables before submission. |
+| Option          | Default                                          | Description                                                            |
+|-----------------|--------------------------------------------------|------------------------------------------------------------------------|
+| service         | *Service name of the app suffixed with -graphql* | The service name for this integration.                                 |
+| filterVariables | `undefined` *No variables will be recorded*      | To enable recording provide a callback. E.g. `variables => variables`. |
 
 <h3 id="http">http / https</h3>
 
