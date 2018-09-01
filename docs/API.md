@@ -176,7 +176,7 @@ query HelloWorld {
 | Option          | Default                                          | Description                                                            |
 |-----------------|--------------------------------------------------|------------------------------------------------------------------------|
 | service         | *Service name of the app suffixed with -graphql* | The service name for this integration.                                 |
-| filterVariables | `undefined` *No variables will be recorded*      | To enable recording provide a callback. E.g. `variables => variables`. |
+| variables       | `undefined` *No variables will be recorded*      | To enable recording provide a callback. E.g. `variables => variables`. |
 
 <h3 id="http">http / https</h3>
 
