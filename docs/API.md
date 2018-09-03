@@ -168,15 +168,17 @@ query HelloWorld {
 
 <h5 id="graphql-tags">Tags</h5>
 
-| Tag              | Description                                               |
-|------------------|-----------------------------------------------------------|
-| graphql.document | The original GraphQL document.                            |
+| Tag                 | Description                                               |
+|---------------------|-----------------------------------------------------------|
+| graphql.document    | The original GraphQL document.                            |
+| graphql.variables.* | The variables applied to the document.                    |
 
 <h5 id="graphql-config">Configuration Options</h5>
 
-| Option  | Default                                          | Description                            |
-|---------|--------------------------------------------------|----------------------------------------|
-| service | *Service name of the app suffixed with -graphql* | The service name for this integration. |
+| Option          | Default                                          | Description                                                            |
+|-----------------|--------------------------------------------------|------------------------------------------------------------------------|
+| service         | *Service name of the app suffixed with -graphql* | The service name for this integration.                                 |
+| variables       | `undefined` *No variables will be recorded*      | To enable recording provide a callback. E.g. `variables => variables`. |
 
 <h3 id="http">http / https</h3>
 
