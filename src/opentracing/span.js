@@ -23,6 +23,10 @@ class DatadogSpan extends Span {
     this._spanContext = this._createContext(parent)
   }
 
+  get service () {
+    return this._tags['service.name']
+  }
+
   _createContext (parent) {
     let spanContext
 

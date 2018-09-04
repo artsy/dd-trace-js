@@ -13,7 +13,7 @@ const BinaryPropagator = require('./propagation/binary')
 const log = require('../log')
 
 class DatadogTracer extends Tracer {
-  constructor (config) {
+  constructor(config) {
     super()
 
     log.use(config.logger)
@@ -23,9 +23,14 @@ class DatadogTracer extends Tracer {
     this._url = config.url
     this._env = config.env
     this._tags = config.tags
-    this._recorder = new Recorder(config.url, config.flushInterval, config.bufferSize)
-    this._recorder.init()
     this._sampler = new Sampler(config.sampleRate)
+    this._recorder = new Recorder(
+      config.url,
+      config.flushInterval,
+      config.bufferSize,
+      this._updateSampleRate.bind(this)
+    )
+    this._recorder.init()
     this._propagators = {
       [opentracing.FORMAT_TEXT_MAP]: new TextMapPropagator(this),
       [opentracing.FORMAT_HTTP_HEADERS]: new HttpPropagator(this),
@@ -33,7 +38,15 @@ class DatadogTracer extends Tracer {
     }
   }
 
-  _startSpan (name, fields) {
+  _updateSampleRate(agentResponse) {
+    console.log(`[${this._service}] AGENT RESPONSE: ${JSON.stringify(agentResponse)}`)
+    // console.log(this._service)
+    // const rate = agentResponse.rate_by_service[this._service]
+    // console.log(rate)
+    // this._sampler.updateRate(rate)
+  }
+
+  _startSpan(name, fields) {
     const tags = {
       'resource.name': name
     }
@@ -54,11 +67,11 @@ class DatadogTracer extends Tracer {
     })
   }
 
-  _record (span) {
+  _record(span) {
     this._recorder.record(span)
   }
 
-  _inject (spanContext, format, carrier) {
+  _inject(spanContext, format, carrier) {
     try {
       this._propagators[format].inject(spanContext, carrier)
     } catch (e) {
@@ -68,7 +81,7 @@ class DatadogTracer extends Tracer {
     return this
   }
 
-  _extract (format, carrier) {
+  _extract(format, carrier) {
     try {
       return this._propagators[format].extract(carrier)
     } catch (e) {
@@ -77,12 +90,12 @@ class DatadogTracer extends Tracer {
     }
   }
 
-  _isSampled (span) {
+  _isSampled(span) {
     return this._sampler.isSampled(span)
   }
 }
 
-function getParent (references) {
+function getParent(references) {
   let parent = null
 
   if (references) {

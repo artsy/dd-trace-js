@@ -15,7 +15,15 @@ let handlers = []
 let promise
 let skip = []
 
+const RESPONSE_MOCK = {
+  rate_by_service: {
+    test: 1
+  }
+}
+
 module.exports = {
+  RESPONSE_MOCK,
+
   load (plugin, pluginName, config) {
     tracer = require('../..')
     agent = express()
@@ -25,8 +33,8 @@ module.exports = {
       next()
     })
 
-    agent.put('/v0.3/traces', (req, res) => {
-      res.status(200).send('OK')
+    agent.put('/v0.4/traces', (req, res) => {
+      res.status(200).send(JSON.stringify(RESPONSE_MOCK))
 
       if (skip[0]) {
         skip[0].resolve()

@@ -1,5 +1,7 @@
 'use strict'
 
+const agent = require('./plugins/agent')
+
 describe('Recorder', () => {
   let Scheduler
   let scheduler
@@ -24,6 +26,14 @@ describe('Recorder', () => {
     Recorder = proxyquire('../src/recorder', {
       './scheduler': Scheduler,
       './writer': Writer
+    })
+  })
+
+  describe('in general', () => {
+    it('should configure the writer with the afterFlush callback', () => {
+      const callback = sinon.stub()
+      recorder = new Recorder('http://test', 1000, 2, callback)
+      expect(Writer.firstCall.lastArg).to.equal(callback)
     })
   })
 
@@ -59,8 +69,11 @@ describe('Recorder', () => {
   })
 
   describe('when interval is set to 0', () => {
+    let yieldedResponse
+
     beforeEach(() => {
-      recorder = new Recorder('http://test', 0)
+      yieldedResponse = null
+      recorder = new Recorder('http://test', 0, 2, res => { yieldedResponse = res })
     })
 
     describe('init', () => {

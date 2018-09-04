@@ -41,7 +41,7 @@ describe('dd-trace', () => {
     }
 
     agent.use(bodyParser.raw({ type: 'application/msgpack' }))
-    agent.put('/v0.3/traces', (req, res) => {
+    agent.put('/v0.4/traces', (req, res) => {
       const payload = msgpack.decode(req.body, { codec })
 
       expect(payload[0][0].trace_id).to.be.instanceof(Uint64BE)
@@ -54,7 +54,11 @@ describe('dd-trace', () => {
       expect(payload[0][0].start).to.be.instanceof(Int64BE)
       expect(payload[0][0].duration).to.be.instanceof(Int64BE)
 
-      res.status(200).send('OK')
+      res.status(200).send(JSON.stringify({
+        rate_by_service: {
+          test: 1
+        }
+      }))
 
       done()
     })
