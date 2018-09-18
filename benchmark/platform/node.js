@@ -1,7 +1,6 @@
 'use strict'
 
 const benchmark = require('../benchmark')
-const Buffer = require('safe-buffer').Buffer
 const platform = require('../../src/platform')
 const node = require('../../src/platform/node')
 
